@@ -11,7 +11,7 @@ export default function Home() {
 
   return (
     <>
-      <Container type="Signup" data={" "} />
+      <Container type="Signup" data={[]} />
     </>
   );
 }

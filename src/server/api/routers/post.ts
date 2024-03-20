@@ -1,10 +1,10 @@
-//@ts-nocheck
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+//@ts-ignore
 import faker from 'faker';
 
-const categories = [];
+const categories: string[] = [];
 for (let i = 0; i < 100; i++) {
-  categories.push(faker?.commerce.department());
+  categories.push(faker.commerce.department());
 }
 
 export const postRouter = createTRPCRouter({

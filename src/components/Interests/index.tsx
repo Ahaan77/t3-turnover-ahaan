@@ -1,5 +1,5 @@
 
-const Interests = ({ item }: { item: String }) => {
+const Interests = ({ item }: { item: string }) => {
 
     return (
         <div className='flex items-center gap-2 mb-5'>
