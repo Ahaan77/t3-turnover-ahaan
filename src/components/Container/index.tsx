@@ -196,7 +196,7 @@ const Container = ({ type, data }: { type: ContainerType; data: string[] }) => {
                                     ))}
                                 </div>
                             </div>
-                            <div className="text-center mt-4 mb-6 flex justify-start">
+                            <div className="text-center mt-10 mb-0 flex justify-start">
                                 <span className='cursor-pointer' onClick={prevPage}>&lt; &nbsp;</span>
                                 {renderPageNumbers()}
                                 <span onClick={nextPage} className="cursor-pointer">
@@ -211,6 +211,7 @@ const Container = ({ type, data }: { type: ContainerType; data: string[] }) => {
                             {buttonTexts[type]}
                         </button>
                     )}
+                    {type === "login" && <div className='w-full h-[1px] bg-[#C1C1C1] -mt-3 mb-5'></div>}
                     <p className="w-full flex justify-center mb-10 text-[#333333] text-[16px]">
                         {footers[type]}
                         <Link href={type === 'Signup' ? '/login' : '/'}>
