@@ -3,7 +3,7 @@ const Login = () => {
 
     return (
 
-        <Container type="login" />
+        <Container type="login" data={" "} />
 
     )
 

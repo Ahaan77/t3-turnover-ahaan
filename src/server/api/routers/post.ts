@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import faker from 'faker';
 

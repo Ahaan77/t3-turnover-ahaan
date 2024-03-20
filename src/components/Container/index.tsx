@@ -78,7 +78,7 @@ const Container = ({ type, data }: { type: ContainerType, data: any }) => {
                                 <p className='text-lg font-medium'>My saved interests!</p>
                                 <div className='mt-3'>
                                     {
-                                        data?.map((item) => {
+                                        data?.map((item : String) => {
                                             return (
                                                 <Interests item={item} />
                                             )
