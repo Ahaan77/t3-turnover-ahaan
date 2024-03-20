@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.inter{
+    font-family: var(--font-sans);
+}
+
+.inputStyle {
+    width: 46px !important;
+    height: 48px;
+    border-radius: 6px;
+    border: 1px solid #C1C1C1;
+    margin-left: 0px;
+    margin-right: 11px;
+    background: #ffffff;
+    font-size: 20px;
+  }
