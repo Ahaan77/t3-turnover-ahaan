@@ -1,4 +1,4 @@
-export const SignUp = async (name: string, email: string): Promise<boolean> => {
+export const Authenticate = async (name: string, email: string): Promise<boolean> => {
     try {
         localStorage?.setItem("username", name);
         localStorage?.setItem("email", email);
@@ -8,9 +8,11 @@ export const SignUp = async (name: string, email: string): Promise<boolean> => {
     }
 };
 
+
 export const Verify = async (code: string): Promise<boolean> => {
     try {
         if (code.length == 8) {
+            localStorage?.setItem("loggedIn", "true")
             return true
         } else {
             return false

@@ -1,7 +1,44 @@
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "~/context/index";
 import { nav, top_nav } from "~/static/index";
+import { useRouter } from "next/router"
 
 const Topbar = ({ banner }: { banner: string }) => {
+
     const navClass = "hover:scale-[1.1] hover:transition duration-200 text-black cursor-pointer hover:text-gray-600";
+    const [displayName, setDisplayName] = useState("")
+    const { loggedIn }: any = useContext(AppContext);
+    const router = useRouter()
+
+    useEffect(() => {
+        const handleStorageChange = () => {
+            // Update displayName whenever localStorage changes
+            setDisplayName(localStorage.getItem("username") ?? "");
+        };
+
+        // Subscribe to the storage event
+        window.addEventListener("storage", handleStorageChange);
+
+        // Call handleStorageChange once immediately to sync with the current state of localStorage
+        handleStorageChange();
+
+        // Cleanup function to remove the event listener when the component unmounts
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
+    }, []);
+
+    const logout = async () => {
+        try {
+            localStorage?.removeItem("email")
+            localStorage?.removeItem("username")
+            localStorage?.removeItem("loggedIn")
+            await router.push("/")
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
     return (
         <>
@@ -11,6 +48,8 @@ const Topbar = ({ banner }: { banner: string }) => {
                         {top_nav?.map((item: string, index: number) => (
                             <p className={navClass} key={index}>{item}</p>
                         ))}
+                        {loggedIn && <p className={navClass}>Hi, {displayName}</p>}
+                        {loggedIn && <p onClick={() => logout()} className={`underline ${navClass}`}>Logout</p>}
                     </div>
                 </div>
                 <div className="flex justify-between mx-10 h-[65px] items-center">

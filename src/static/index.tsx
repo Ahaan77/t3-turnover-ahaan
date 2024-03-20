@@ -7,7 +7,7 @@ export const nav = [
 ]
 
 export const top_nav = [
-    "Help", "Orders & Returns", "Hi, John"
+    "Help", "Orders & Returns"
 ]
 
 export const headlines = {
