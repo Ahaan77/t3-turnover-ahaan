@@ -7,6 +7,7 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import Topbar from "~/components/Topbar/index";
 import { AppContext } from "~/context/index";
+import Toast from "~/components/Toast/index";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,25 +17,30 @@ const inter = Inter({
 const MyApp: AppType = ({ Component, pageProps }) => {
 
   const [loggedIn, setLoggedIn] = useState(false)
+  const [displayName, setDisplayName] = useState("")
 
   const router = useRouter();
 
   useEffect(() => {
     const loginStatus = localStorage.getItem('loggedIn');
+    const dName = localStorage.getItem('username');
     if (loginStatus === "true") {
       setLoggedIn(true);
+      setDisplayName(dName ?? "");
       if (router.pathname !== '/protected') {
         router.push('/protected');
       }
     } else {
       setLoggedIn(false);
+      setDisplayName(" ");
     }
   }, [router.pathname]);
 
 
   const providerObj = {
     loggedIn,
-    setLoggedIn
+    setLoggedIn,
+    displayName
   }
 
   return (

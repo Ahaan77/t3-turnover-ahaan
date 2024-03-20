@@ -4,7 +4,6 @@ import { api } from "~/utils/api";
 const Protected = () => {
     const res = api.post.getCategories.useQuery();
     const data = res?.data ?? []; // Default to an empty array if res?.data is undefined
-    console.log("data", data);
 
     return (
         <Container type="protected" data={data} />

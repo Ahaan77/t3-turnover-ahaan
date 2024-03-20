@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Authenticate, Verify } from '~/utils/index';
 import { useRouter } from 'next/router';
 import {
@@ -13,6 +13,7 @@ import {
 import OtpInput from 'react-otp-input';
 import Interests from '../Interests/index';
 import { AppContext } from '~/context/index';
+import Toast from '../Toast/index';
 
 type ContainerType = 'Signup' | 'login' | 'verify' | 'protected';
 
@@ -26,8 +27,11 @@ const Container = ({ type, data }: { type: ContainerType; data: string[] }) => {
     const router = useRouter();
     const { setLoggedIn }: any = useContext(AppContext)
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+    const [errorMessage, setErrorMessage] = useState("")
 
     const itemsPerPage = 6;
+    const totalPages = Math.ceil(data.length / itemsPerPage);
 
     const handlePagination = (pageNumber: number) => {
         setCurrentPage(pageNumber);
@@ -40,28 +44,68 @@ const Container = ({ type, data }: { type: ContainerType; data: string[] }) => {
 
     const inputClass = 'border border-[#C1C1C1] px-3 py-3 rounded-[6px] w-full focus:outline-none flex justify-between items-center';
 
+
     const clickButton = async () => {
-        if (type === 'Signup') {
-            const res = await Authenticate(name, email);
-            if (res === true) {
-                await router.push('/verify');
+        try {
+            if (type === 'Signup') {
+                const res = await Authenticate(name, email);
+                if (res === true) {
+                    await router.push('/verify');
+                } else {
+                    setErrorMessage(res)
+                }
+            } else if (type === 'verify') {
+                const res = await Verify(otp);
+                if (res === true) {
+                    setLoggedIn(true)
+                    await router.push('/protected');
+                } else {
+                    setErrorMessage("Pin needs to have 8 digits.")
+                }
+            } else if (type === 'login') {
+                const user = localStorage.getItem('username') ?? ""
+                const res = await Authenticate(user, email);
+                if (res === true) {
+                    localStorage?.setItem("loggedIn", "true")
+                    await router.push("/protected")
+                } else {
+                    setErrorMessage(res)
+                }
             }
-        } else if (type === 'verify') {
-            const res = await Verify(otp);
-            if (res === true) {
-                setLoggedIn(true)
-                await router.push('/protected');
-            }
-        } else if (type === 'login') {
-            const res = await Authenticate(name, email);
-            if (res) {
-                localStorage?.setItem("loggedIn", "true")
-                await router.push("/protected")
-            }
+        } catch (err) {
+            console.log(err)
         }
     };
 
-    const totalPages = Math.ceil(data.length / itemsPerPage);
+    useEffect(() => {
+        const loggedInStatus = localStorage.getItem('loggedIn');
+        if (loggedInStatus === 'true') {
+            const storedInterests = localStorage.getItem('selectedInterests');
+            if (storedInterests) {
+                setSelectedInterests(JSON.parse(storedInterests));
+            }
+        }
+    }, []);
+
+
+    const handleInterestClick = (item: string) => {
+        setSelectedInterests((prevSelectedInterests) => {
+
+            let updatedSelectedInterests;
+
+            if (prevSelectedInterests.includes(item)) {
+
+                updatedSelectedInterests = prevSelectedInterests.filter((selectedItem) => selectedItem !== item);
+            } else {
+
+                updatedSelectedInterests = [...prevSelectedInterests, item];
+            }
+
+            localStorage.setItem('selectedInterests', JSON.stringify(updatedSelectedInterests));
+
+            return updatedSelectedInterests;
+        });
+    };
 
     const renderPageNumbers = () => {
         const visiblePages = 7; // Number of visible pages
@@ -99,12 +143,13 @@ const Container = ({ type, data }: { type: ContainerType; data: string[] }) => {
 
     return (
         <div className="flex justify-center">
+
             <div className="mt-10 w-[576px] border border-[#C1C1C1] rounded-[20px]">
                 <p className="text-3xl font-semibold mt-8 flex justify-center">{headlines[type]}</p>
                 {type !== 'Signup' && (
                     <div>
                         <p className="text-2xl mt-8 flex justify-center">{subHeadlines[type]}</p>
-                        <p className="text-lg mt-3 flex justify-center">{descriptions[type]}</p>
+                        <p className=" mt-3 flex justify-center">{descriptions[type]}</p>
                     </div>
                 )}
                 <div className="mx-16 mt-8">
@@ -140,9 +185,14 @@ const Container = ({ type, data }: { type: ContainerType; data: string[] }) => {
                         <>
                             <div>
                                 <p className="text-lg font-medium">My saved interests!</p>
-                                <div className="mt-3">
+                                <div className="mt-5">
                                     {currentItems.map((item, index) => (
-                                        <Interests key={index} item={item} />
+                                        <Interests
+                                            key={index}
+                                            item={item}
+                                            selected={selectedInterests.includes(item)}
+                                            onClick={() => handleInterestClick(item)}
+                                        />
                                     ))}
                                 </div>
                             </div>
@@ -168,6 +218,7 @@ const Container = ({ type, data }: { type: ContainerType; data: string[] }) => {
                         </Link>
                     </p>
                 </div>
+                {errorMessage?.length > 0 && <Toast errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
             </div>
         </div>
     );

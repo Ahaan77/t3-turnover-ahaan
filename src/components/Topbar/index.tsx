@@ -6,32 +6,11 @@ import { useRouter } from "next/router"
 const Topbar = ({ banner }: { banner: string }) => {
 
     const navClass = "hover:scale-[1.1] hover:transition duration-200 text-black cursor-pointer hover:text-gray-600";
-    const [displayName, setDisplayName] = useState("")
-    const { loggedIn }: any = useContext(AppContext);
+    const { loggedIn, displayName }: any = useContext(AppContext);
     const router = useRouter()
-
-    useEffect(() => {
-        const handleStorageChange = () => {
-            // Update displayName whenever localStorage changes
-            setDisplayName(localStorage.getItem("username") ?? "");
-        };
-
-        // Subscribe to the storage event
-        window.addEventListener("storage", handleStorageChange);
-
-        // Call handleStorageChange once immediately to sync with the current state of localStorage
-        handleStorageChange();
-
-        // Cleanup function to remove the event listener when the component unmounts
-        return () => {
-            window.removeEventListener("storage", handleStorageChange);
-        };
-    }, []);
 
     const logout = async () => {
         try {
-            localStorage?.removeItem("email")
-            localStorage?.removeItem("username")
             localStorage?.removeItem("loggedIn")
             await router.push("/")
 

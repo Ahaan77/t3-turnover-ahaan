@@ -1,8 +1,16 @@
-export const Authenticate = async (name: string, email: string): Promise<boolean> => {
+export const Authenticate = async (name: string, email: string): Promise<any>  => {
     try {
-        localStorage?.setItem("username", name);
-        localStorage?.setItem("email", email);
-        return true;
+        if (isValidEmail(email) && name.length > 0 && email.length > 0) {
+            localStorage?.setItem("username", name);
+            localStorage?.setItem("email", email);
+            return true;
+        } else if (!isValidEmail(email)) {
+            return "Invalid Email. Please try again!"
+        } else if (email.length === 0) {
+            return "Email cannot be empty!"
+        } else if (name.length === 0) {
+            return "Username cannot be empty!"
+        }
     } catch (err) {
         throw new Error("Something went wrong");
     }
@@ -21,3 +29,13 @@ export const Verify = async (code: string): Promise<boolean> => {
         throw new Error("Something went wrong")
     }
 }
+
+function isValidEmail(email: string) {
+    // Regular expression for validating email addresses
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    return emailRegex.test(email);
+}
+
+
+
