@@ -207,7 +207,7 @@ const Container = ({ type, data }: { type: ContainerType; data: string[] }) => {
 
                     )}
                     {type !== 'protected' && (
-                        <button onClick={() => clickButton()} className="mt-6 rounded-[6px] bg-black text-white w-full px-4 py-4 mb-10 hover:bg-gray-700 hover:transition duration-400 uppercase ">
+                        <button onClick={() => clickButton()} className={`mt-6 rounded-[6px] bg-black text-white w-full px-4 py-4 ${type === "verify" ? "mb-0" : "mb-10"} hover:bg-gray-700 hover:transition duration-400 uppercase`}>
                             {buttonTexts[type]}
                         </button>
                     )}
